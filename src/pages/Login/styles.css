@@ -1,0 +1,470 @@
+:root {
+  --primary-color: #135bec;
+  --primary-hover: #114cc4;
+  --bg-light: #f6f6f8;
+  --text-main: #0d121b;
+  --text-secondary: #4c669a;
+  --border-color: #cfd7e7;
+  --white: #ffffff;
+}
+
+* {
+  box-sizing: border-box;
+  font-family: 'Inter', sans-serif;
+}
+
+.login-page {
+  background-color: var(--bg-light);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Header */
+.main-header {
+  background: var(--white);
+  border-bottom: 1px solid var(--border-color);
+  padding: 12px 0;
+}
+
+.header-content {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.logo-section {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--text-main);
+}
+
+.logo-icon {
+  color: var(--primary-color);
+  font-size: 32px;
+}
+
+.logo-section h2 {
+  font-size: 18px;
+  font-weight: 700;
+  margin: 0;
+}
+
+.help-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--bg-light);
+  border: none;
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-weight: 600;
+  color: var(--text-main);
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.help-btn:hover {
+  background: #e5e7eb;
+}
+
+/* Main Container */
+.main-container {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.login-card {
+  background: var(--white);
+  width: 100%;
+  max-width: 1000px;
+  min-height: 600px;
+  border-radius: 12px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+  display: flex;
+  overflow: hidden;
+  border: 1px solid var(--border-color);
+}
+
+/* Left Side (Blue) */
+.left-side {
+  width: 42%;
+  background-color: var(--primary-color);
+  position: relative;
+  padding: 40px;
+  display: flex;
+  flex-direction: column;
+  color: white;
+  /* Se tiver uma imagem de fundo, descomente abaixo */
+  /* background-image: url('caminho-da-imagem.jpg'); background-size: cover; */
+}
+
+/* Gradiente sobre a imagem */
+.overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, var(--primary-color), #0a3a9e);
+  opacity: 0.9;
+}
+
+.left-content {
+  position: relative;
+  z-index: 10;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.icon-box {
+  width: 48px;
+  height: 48px;
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(4px);
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 24px;
+}
+
+.left-content h1 {
+  font-size: 32px;
+  font-weight: 700;
+  line-height: 1.2;
+  margin-bottom: 16px;
+}
+
+.left-content p {
+  font-size: 14px;
+  color: #dbeafe; /* Azul bem claro */
+  line-height: 1.6;
+  max-width: 300px;
+}
+
+.people-connected {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.avatars {
+  display: flex;
+}
+
+.avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background-color: #ddd;
+  border: 2px solid var(--primary-color);
+  margin-left: -10px;
+}
+.avatar:first-child { margin-left: 0; }
+
+.people-connected span {
+  font-size: 12px;
+  font-weight: 500;
+  color: #dbeafe;
+}
+
+/* Right Side (Form) */
+.right-side {
+  flex: 1;
+  padding: 48px;
+  display: flex;
+  flex-direction: column;
+}
+
+.form-header {
+  margin-bottom: 32px;
+}
+
+.form-header h2 {
+  font-size: 24px;
+  font-weight: 700;
+  margin: 0 0 8px 0;
+  color: var(--text-main);
+}
+
+.form-header p {
+  color: var(--text-secondary);
+  font-size: 14px;
+  margin: 0;
+}
+
+/* Tabs */
+.tabs {
+  display: flex;
+  border-bottom: 1px solid var(--border-color);
+  margin-bottom: 32px;
+}
+
+.tab-btn {
+  flex: 1;
+  background: none;
+  border: none;
+  padding-bottom: 12px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  color: var(--text-secondary);
+  border-bottom: 3px solid transparent;
+  transition: all 0.2s;
+}
+
+.tab-btn.active {
+  color: var(--primary-color);
+  border-bottom-color: var(--primary-color);
+}
+
+/* Form Styles */
+.auth-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.input-group label {
+  display: block;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text-main);
+  margin-bottom: 6px;
+}
+
+.input-wrapper {
+  position: relative;
+}
+
+.input-wrapper input {
+  width: 100%;
+  padding: 12px 16px;
+  padding-right: 40px; /* Espaço para o ícone */
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  font-size: 14px;
+  background: var(--bg-light);
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.input-wrapper input:focus {
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 2px rgba(19, 91, 236, 0.1);
+}
+
+.input-icon {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--text-secondary);
+  font-size: 20px;
+  pointer-events: none;
+}
+
+.label-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.forgot-link {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--primary-color);
+  text-decoration: none;
+}
+
+.primary-btn {
+  background: var(--primary-color);
+  color: white;
+  border: none;
+  padding: 14px;
+  border-radius: 8px;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  transition: background 0.2s;
+  margin-top: 8px;
+}
+
+.primary-btn:hover {
+  background: var(--primary-hover);
+}
+
+.arrow-icon {
+  font-size: 18px;
+}
+
+/* Divider e Social */
+.divider {
+  position: relative;
+  text-align: center;
+  margin: 10px 0;
+}
+
+.divider::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 0;
+  right: 0;
+  border-top: 1px solid var(--border-color);
+}
+
+.divider span {
+  background: white;
+  padding: 0 10px;
+  position: relative;
+  font-size: 12px;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+}
+
+.social-buttons {
+  display: flex;
+  gap: 12px;
+}
+
+.social-btn {
+  flex: 1;
+  background: white;
+  border: 1px solid var(--border-color);
+  padding: 10px;
+  border-radius: 8px;
+  font-weight: 500;
+  font-size: 14px;
+  color: var(--text-main);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.social-btn:hover {
+  background: #f9fafb;
+}
+
+.google-icon {
+  width: 20px;
+  height: 20px;
+}
+
+.main-footer {
+  text-align: center;
+  padding: 24px;
+  color: var(--text-secondary);
+  font-size: 14px;
+}
+
+/* Responsividade para celular */
+@media (max-width: 768px) {
+  .login-card {
+    flex-direction: column;
+  }
+  
+  .left-side {
+    display: none; /* Esconde o lado azul no mobile, igual ao código da IA */
+  }
+
+  .right-side {
+    padding: 24px;
+  }
+}
+
+.animate-fade {
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(5px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+
+
+.custom-checkbox {
+  display: flex;
+  align-items: center;
+  gap: 12px; 
+  margin: 10px 0 20px 0;
+  cursor: pointer;
+  user-select: none;
+  position: relative;
+}
+
+
+.custom-checkbox input {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+  height: 0;
+  width: 0;
+}
+
+
+.checkmark {
+  position: relative;
+  height: 22px;
+  width: 22px;
+  background-color: #fff;
+  border: 1px solid var(--border-color); 
+  border-radius: 8px; 
+  transition: all 0.2s ease-in-out;
+ 
+}
+
+
+.custom-checkbox:hover input ~ .checkmark {
+  border-color: var(--primary-color);
+  background-color: #f0f7ff;
+}
+
+
+.custom-checkbox input:checked ~ .checkmark {
+  background-color: var(--primary-color);
+  border-color: var(--primary-color);
+}
+
+
+.checkmark:after {
+  content: "";
+  position: absolute;
+  display: none;
+}
+
+.custom-checkbox input:checked ~ .checkmark:after {
+  display: block;
+}
+
+
+.custom-checkbox .checkmark:after {
+  left: 7px;
+  top: 3px;
+  width: 6px;
+  height: 11px;
+  border: solid white;
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+}
+
+
+.label-text {
+  font-size: 14px;
+  color: var(--text-main);
+  font-weight: 500;
+}
