@@ -1,20 +1,13 @@
-// src/App.jsx
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
-
-// IMPORTANTE: Verifique se o caminho está certo.
-// Se o arquivo for src/pages/Login/index.jsx ou src/pages/Login/Login.jsx
-import Login from './pages/Login/LoginPage'; 
+import Login from './pages/Login/index'; 
+import Home from './pages/Home/index'; 
 
 function App() {
   return (
     <BrowserRouter>
       <Routes>
-        {/* A rota "/" é a primeira página que abre */}
         <Route path="/" element={<Login />} />
-
-        {/* Futuramente você adicionará outras, ex:
         <Route path="/home" element={<Home />} /> 
-        */}
       </Routes>
     </BrowserRouter>
   );
