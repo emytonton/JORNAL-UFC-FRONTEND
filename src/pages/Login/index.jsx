@@ -289,9 +289,9 @@ const Login = () => {
                         type="checkbox" 
                         checked={isStudent}
                         onChange={(e) => setIsStudent(e.target.checked)}
-                      /> 
+                      />
+                      <span className="label-text">Você é aluno?</span>  
                       <span className="checkmark"></span> 
-                      <span className="label-text">Você é aluno?</span> 
                     </label> 
                   </div>
 
