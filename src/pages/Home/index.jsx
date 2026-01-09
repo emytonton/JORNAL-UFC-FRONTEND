@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom'; 
 import './styles.css'; 
 
+
 const Home = () => {
   const [activeTab, setActiveTab] = useState('recentes');
 
@@ -79,10 +80,10 @@ const Home = () => {
           </div>
 
           <div className="user-actions">
-            <button className="new-post-btn">
-              <span className="material-symbols-outlined">add</span>
-              <span className="btn-text">Nova Publicação</span>
-            </button>
+            <Link to="/CreatePost" className="new-post-btn">
+            <span className="material-symbols-outlined">add</span>
+            <span className="btn-text">Nova Publicação</span>
+          </Link>
             <div className="profile-pic" style={{backgroundImage: 'url("https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=1887&auto=format&fit=crop")'}}></div>
           </div>
         </div>
