@@ -477,6 +477,24 @@
   color: var(--text-main);
 }
 
+.delete-post-btn{
+  position: absolute;
+  top: 6px;
+  right: 8px;
+  background: rgba(246, 64, 64, 0.7);
+  border: none;
+  border-radius: 20%;
+  color: white;
+  cursor: pointer;
+  padding: 3px;
+  z-index: 10
+}
+
+.delete-post-btn span {
+  font-size: 16px;
+  margin-top: 3px;
+}
+
 
 @media (max-width: 1024px) {
   .sidebar {

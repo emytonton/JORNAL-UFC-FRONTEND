@@ -6,11 +6,19 @@ const Home = () => {
   const [activeTab, setActiveTab] = useState("recentes");
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [currentUser, setCurrentUser] = useState(null);
   
   const navigate = useNavigate(); 
 
 
   const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+
+    useEffect(() => {
+    const storedUser = localStorage.getItem("user");
+    if (storedUser) {
+      setCurrentUser(JSON.parse(storedUser));
+    }
+  }, []);
 
   const fetchPosts = async () => {
     try {
@@ -97,7 +105,7 @@ const Home = () => {
             </span>
             <input
               type="text"
-              placeholder="Buscar por notícias, eventos, editais..."
+              placeholder="Buscar por notícias..."
             />
           </div>
 
@@ -163,7 +171,7 @@ const Home = () => {
         <main className="content-area">
           <div className="content-wrapper">
             <div className="welcome-section">
-              <h1>Olá, Estudante 👋</h1>
+              <h1>Olá {currentUser?.name || "Usuário"} 👋</h1>
               <p>
                 Veja as últimas atualizações da comunidade acadêmica.
               </p>
@@ -221,7 +229,6 @@ const Home = () => {
                   <article 
                     key={post.id} 
                     className="news-card"
-                    // Adicionado onClick aqui para navegar ao clicar no card
                     onClick={() => handlePostClick(post.id)}
                     style={{ cursor: "pointer" }}
                   >
@@ -233,33 +240,17 @@ const Home = () => {
                     >
                       <span className="card-category">{post.category}</span>
 
-                      <button
-                        // Atualizado para impedir propagação do clique
-                        onClick={(e) => {
-                          e.stopPropagation(); // Impede que abra a notícia ao clicar em deletar
-                          handleDelete(post.id);
-                        }}
-                        className="delete-post-btn"
-                        style={{
-                          position: "absolute",
-                          top: "10px",
-                          right: "10px",
-                          background: "rgba(255,0,0,0.7)",
-                          border: "none",
-                          borderRadius: "50%",
-                          color: "white",
-                          cursor: "pointer",
-                          padding: "5px",
-                          zIndex: 10 // Garante que o botão fique acima do clique do card
-                        }}
-                      >
-                        <span
-                          className="material-symbols-outlined"
-                          style={{ fontSize: "18px" }}
+                      {currentUser && post.user?.id === currentUser.id && (
+                        <button 
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleDelete(post.id);
+                          }}
+                          className="delete-post-btn"
                         >
-                          delete
-                        </span>
-                      </button>
+                          <span className="material-symbols-outlined">delete</span>
+                        </button>
+                      )}
                     </div>
 
                     <div className="card-content">

@@ -573,6 +573,12 @@ body {
   opacity: 0.9;
 }
 
+.article-title-profile {
+  font-weight: 600;
+  font-size: 1.35rem;
+  color: var(--text-main);
+}
+
 /* Media Queries */
 @media (min-width: 768px) {
   .main-nav {

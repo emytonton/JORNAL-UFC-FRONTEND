@@ -232,7 +232,7 @@ const Profile = () => {
                       <div className="article-cell">
                         <div className="article-thumb" style={{ backgroundImage: `url("${post.media}")` }}></div>
                         <div className="article-info">
-                          <p className="article-title">{post.title}</p>
+                          <p className="article-title-profile">{post.title}</p>
                           <span className="article-date-mobile">{formatDate(post.createdAt)}</span>
                         </div>
                       </div>
