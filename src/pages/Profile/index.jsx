@@ -1,44 +1,147 @@
-import React from "react";
-import { Link } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import "./styles.css";
 
 const Profile = () => {
-  // Dados simulados para a tabela (Array)
-  const posts = [
-    {
-      id: 1,
-      title: "Inscrições abertas para Hackathon 2024",
-      date: "12 Out 2023",
-      image: "https://images.unsplash.com/photo-1550751827-4bd374c3f58b?q=80&w=150&auto=format&fit=crop",
-    },
-    {
-      id: 2,
-      title: "Novas regras da biblioteca central",
-      date: "05 Out 2023",
-      image: "https://images.unsplash.com/photo-1524995997946-a1c2e315a42f?q=80&w=150&auto=format&fit=crop",
-    },
-    {
-      id: 3,
-      title: "Resultado do projeto de extensão: Tech4Good",
-      date: "28 Set 2023",
-      image: "https://images.unsplash.com/photo-1531482615713-2afd69097998?q=80&w=150&auto=format&fit=crop",
-    },
-    {
-      id: 4,
-      title: "Cronograma de final de semestre 2023.2",
-      date: "15 Set 2023",
-      image: "https://images.unsplash.com/photo-1541339907198-e08756dedf3f?q=80&w=150&auto=format&fit=crop",
-    },
-  ];
+  const navigate = useNavigate();
+  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+
+  const [user, setUser] = useState(null);
+  const [posts, setPosts] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+  
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [editData, setEditData] = useState({ name: "", email: "" });
+
+  useEffect(() => {
+    const storedUser = localStorage.getItem("user");
+    if (storedUser) {
+      const parsedUser = JSON.parse(storedUser);
+      setUser(parsedUser);
+      setEditData({ name: parsedUser.name, email: parsedUser.email });
+    }
+  }, []);
+
+  useEffect(() => {
+    const fetchPosts = async () => {
+      const token = localStorage.getItem("token");
+      if (!token) {
+        setError("Você precisa estar logado para acessar seu perfil.");
+        setLoading(false);
+        return;
+      }
+
+      try {
+        const response = await fetch(`${API_BASE_URL}/api/posts`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+            
+          },
+        });
+        const data = await response.json();
+        if (response.ok) {
+          setPosts(data.posts || []);
+        } else {
+          setError(data.error || "Erro ao carregar publicações.");
+        }
+      } catch (err) {
+        setError("Erro de conexão ao carregar publicações.");
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchPosts();
+  }, [API_BASE_URL]);
+
+  const handleUpdateProfile = async (e) => {
+    e.preventDefault();
+    try {
+      const token = localStorage.getItem("token");
+      const response = await fetch(`${API_BASE_URL}/api/auth/me`, {
+        method: "PUT",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+          
+        },
+        body: JSON.stringify(editData),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        const updatedUser = { ...user, ...data.user };
+        setUser(updatedUser);
+        localStorage.setItem("user", JSON.stringify(updatedUser));
+        setIsModalOpen(false);
+        alert("Perfil atualizado com sucesso!");
+      } else {
+        alert(data.error || "Erro ao atualizar perfil.");
+      }
+    } catch (err) {
+      alert("Erro de conexão ao atualizar perfil.");
+    }
+  };
+
+  const formatDate = (dateString) => {
+    if (!dateString) return "--";
+    const date = new Date(dateString);
+    return date.toLocaleDateString("pt-BR", {
+      day: "2-digit",
+      month: "short",
+      year: "numeric",
+    });
+  };
+
+  const formatMemberSince = (dateString) => {
+    if (!dateString) return "--";
+    const date = new Date(dateString);
+    return date.toLocaleDateString("pt-BR", {
+      month: "long",
+      year: "numeric",
+    });
+  };
+
+  const handleDelete = async (postId) => {
+    if (!window.confirm("Tem certeza que deseja excluir esta publicação?")) return;
+    try {
+      const token = localStorage.getItem("token");
+      const response = await fetch(`${API_BASE_URL}/api/posts/${postId}`, {
+        method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+          
+        },
+      });
+      if (response.ok) {
+        setPosts((prev) => prev.filter((post) => post.id !== postId));
+      } else {
+        const data = await response.json();
+        alert(data.error || "Erro ao excluir publicação.");
+      }
+    } catch (err) {
+      alert("Erro de conexão ao excluir.");
+    }
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
+    navigate("/");
+  };
+
+  const filteredPosts = user?.id ? posts.filter((post) => post.user?.id === user.id) : posts;
 
   return (
     <div className="page-wrapper">
-      {/* Navbar Superior */}
       <header className="top-header">
         <div className="header-left">
           <div className="logo-container">
             <span className="material-symbols-outlined logo-icon">school</span>
-            <h2>Portal UFC</h2>
+            <Link to="/home" className="logo-link">Portal UFC</Link>
           </div>
           <nav className="main-nav">
             <Link to="/news" className="nav-link">Notícias</Link>
@@ -46,53 +149,43 @@ const Profile = () => {
             <Link to="/community" className="nav-link">Comunidade</Link>
           </nav>
         </div>
-
         <div className="header-right">
           <div className="search-wrapper">
             <span className="material-symbols-outlined" style={{ color: "var(--text-secondary)" }}>search</span>
             <input className="search-input" placeholder="Buscar..." />
           </div>
-
           <button className="new-post-btn">
             <span className="material-symbols-outlined">add</span>
             <span style={{ display: "none" }} className="desktop-text">Nova Publicação</span>
           </button>
-
-          <div
-            className="header-avatar"
-            style={{
-              backgroundImage: 'url("https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?q=80&w=150&auto=format&fit=crop")',
-            }}
-          ></div>
+          <div className="header-avatar" style={{ backgroundImage: 'url("https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?q=80&w=150&auto=format&fit=crop")' }}></div>
         </div>
       </header>
 
-      {/* Conteúdo Principal */}
       <div className="profile-container">
-        
-        {/* Coluna Esquerda: Informações do Usuário */}
         <div className="left-column">
-          <div className="user-card">
-            <div className="relative group">
-              <div
-                className="user-avatar-large"
-                style={{
-                  backgroundImage: 'url("https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?q=80&w=400&auto=format&fit=crop")',
-                }}
-              ></div>
-            </div>
-            <h1 className="user-name">Carlos Silva</h1>
-            <p className="user-role">Professor - Dept. de Computação</p>
-            <p className="user-joined">Membro desde Março 2018</p>
-
+          <div className="user-card" style={{ position: "relative" }}>
+            <button 
+              onClick={() => setIsModalOpen(true)}
+              className="edit-profile-btn"
+              title="Editar Perfil"
+            >
+              <img 
+                className="image_edit_profile" 
+                src="src/assets/edit_profile.png" 
+                alt="edit profile" 
+              />
+            </button>
+            <div className="user-avatar-large" style={{ backgroundImage: 'url("https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?q=80&w=400&auto=format&fit=crop")' }}></div>
+            <h1 className="user-name">{user?.name || "Usuário"}</h1>
+            <p className="user-role">{user?.role ? user.role : "Perfil"}</p>
+            <p className="user-joined">Membro desde {formatMemberSince(user?.createdAt)}</p>
             <div className="divider"></div>
-
             <div className="user-stats">
               <div className="stat-item">
-                <span className="stat-value">15</span>
+                <span className="stat-value">{filteredPosts.length}</span>
                 <span className="stat-label">Publicações</span>
               </div>
-              {/* Removidos Comentários e Views */}
             </div>
           </div>
 
@@ -102,57 +195,54 @@ const Profile = () => {
                 <span className="material-symbols-outlined">article</span>
                 Minhas Publicações
               </a>
-              {/* Removidos: Comentários e Configurações */}
-              
-              <a href="#" className="menu-item logout">
+              <button type="button" className="menu-item logout" onClick={handleLogout}>
                 <span className="material-symbols-outlined">logout</span>
                 Sair
-              </a>
+              </button>
             </nav>
           </div>
         </div>
 
-        {/* Coluna Direita: Gerenciamento de Publicações */}
         <div className="content-column">
           <div className="section-header">
             <h2 className="section-title">Gerenciar Publicações</h2>
-            {/* Filtros removidos */}
           </div>
-
           <div className="table-container">
             <table className="responsive-table">
               <thead>
                 <tr>
                   <th>Artigo</th>
                   <th className="hidden-mobile">Data</th>
-                  {/* Removido Status */}
                   <th style={{ textAlign: "right" }}>Ações</th>
                 </tr>
               </thead>
               <tbody>
-                {posts.map((post) => (
+                {loading && (
+                  <tr><td colSpan={3}>Carregando publicações...</td></tr>
+                )}
+                {!loading && error && (
+                  <tr><td colSpan={3}>{error}</td></tr>
+                )}
+                {!loading && !error && filteredPosts.length === 0 && (
+                  <tr><td colSpan={3}>Nenhuma publicação encontrada.</td></tr>
+                )}
+                {!loading && !error && filteredPosts.map((post) => (
                   <tr key={post.id}>
                     <td>
                       <div className="article-cell">
-                        <div
-                          className="article-thumb"
-                          style={{ backgroundImage: `url("${post.image}")` }}
-                        ></div>
+                        <div className="article-thumb" style={{ backgroundImage: `url("${post.media}")` }}></div>
                         <div className="article-info">
                           <p className="article-title">{post.title}</p>
-                          <span className="article-date-mobile">{post.date}</span>
+                          <span className="article-date-mobile">{formatDate(post.createdAt)}</span>
                         </div>
                       </div>
                     </td>
                     <td className="hidden-mobile" style={{ color: "var(--text-secondary)", fontSize: "0.875rem" }}>
-                      {post.date}
+                      {formatDate(post.createdAt)}
                     </td>
                     <td>
                       <div className="actions-cell">
-                        <button className="action-btn" title="Editar">
-                          <span className="material-symbols-outlined" style={{ fontSize: "20px" }}>edit_square</span>
-                        </button>
-                        <button className="action-btn delete" title="Excluir">
+                        <button className="action-btn delete" title="Excluir" onClick={() => handleDelete(post.id)}>
                           <span className="material-symbols-outlined" style={{ fontSize: "20px" }}>delete</span>
                         </button>
                       </div>
@@ -161,25 +251,51 @@ const Profile = () => {
                 ))}
               </tbody>
             </table>
-
             <div className="pagination">
               <p className="pagination-info">
-                Mostrando <span style={{ fontWeight: 600 }}>1</span> a <span style={{ fontWeight: 600 }}>4</span> de <span style={{ fontWeight: 600 }}>15</span> resultados
+                Mostrando <span style={{ fontWeight: 600 }}>{filteredPosts.length === 0 ? 0 : 1}</span> a <span style={{ fontWeight: 600 }}>{filteredPosts.length}</span> de <span style={{ fontWeight: 600 }}>{filteredPosts.length}</span> resultados
               </p>
-              <div className="pagination-controls">
-                <button className="page-btn" disabled>
-                  <span className="material-symbols-outlined">chevron_left</span>
-                </button>
-                <button className="page-btn">
-                  <span className="material-symbols-outlined">chevron_right</span>
-                </button>
-              </div>
             </div>
           </div>
-          
-          {/* Seção de Acesso Rápido Removida Inteiramente */}
         </div>
       </div>
+
+      {isModalOpen && (
+        <div className="modal-overlay">
+          <div className="modal-content">
+            <div className="modal-header">
+              <h2>Editar Perfil</h2>
+              <button className="close-modal" onClick={() => setIsModalOpen(false)}>
+                <span className="material-symbols-outlined">close</span>
+              </button>
+            </div>
+            <form onSubmit={handleUpdateProfile}>
+              <div className="input-group">
+                <label>Nome Completo</label>
+                <input 
+                  type="text" 
+                  value={editData.name} 
+                  onChange={(e) => setEditData({...editData, name: e.target.value})} 
+                  placeholder="Seu nome"
+                />
+              </div>
+              <div className="input-group">
+                <label>E-mail</label>
+                <input 
+                  type="email" 
+                  value={editData.email} 
+                  onChange={(e) => setEditData({...editData, email: e.target.value})} 
+                  placeholder="seu@email.com"
+                />
+              </div>
+              <div className="modal-actions">
+                <button type="button" className="btn-cancel" onClick={() => setIsModalOpen(false)}>Cancelar</button>
+                <button type="submit" className="btn-save">Salvar Alterações</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
