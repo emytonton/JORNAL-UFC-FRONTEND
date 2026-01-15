@@ -31,7 +31,7 @@ const Login = () => {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "ngrok-skip-browser-warning": "true", // Evita a tela de bloqueio do ngrok
+           // Evita a tela de bloqueio do ngrok
         },
         body: JSON.stringify({
           email: loginEmail,
@@ -74,7 +74,7 @@ const Login = () => {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "ngrok-skip-browser-warning": "true", // Evita a tela de bloqueio do ngrok
+           // Evita a tela de bloqueio do ngrok
         },
         body: JSON.stringify(userData),
       });

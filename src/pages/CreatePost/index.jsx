@@ -77,7 +77,7 @@ export default function NewsPublish() {
         method: "POST",
         headers: {
           Authorization: `Bearer ${token}`,
-          "ngrok-skip-browser-warning": "true", // Header essencial para o Ngrok
+           // Header essencial para o Ngrok
           // NÃO adicione Content-Type aqui, o FormData cuida disso automaticamente
         },
         body: data,
