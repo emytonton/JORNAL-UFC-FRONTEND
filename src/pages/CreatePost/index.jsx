@@ -25,6 +25,8 @@ export default function NewsPublish() {
   const [activeTab, setActiveTab] = useState("write");
   const [loading, setLoading] = useState(false);
 
+  const API_BASE_URL = "https://f5f59eb2690a.ngrok-free.app";
+
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({
@@ -71,10 +73,12 @@ export default function NewsPublish() {
       data.append("category", formData.category.toLowerCase());
       data.append("media", selectedFile);
 
-      const response = await fetch("http://localhost:3000/api/posts", {
+      const response = await fetch(`${API_BASE_URL}/api/posts`, {
         method: "POST",
         headers: {
           Authorization: `Bearer ${token}`,
+          "ngrok-skip-browser-warning": "true", // Header essencial para o Ngrok
+          // NÃO adicione Content-Type aqui, o FormData cuida disso automaticamente
         },
         body: data,
       });
@@ -88,6 +92,7 @@ export default function NewsPublish() {
         alert(result.error || "Erro ao publicar a notícia.");
       }
     } catch (error) {
+      console.error(error);
       alert("Erro de conexão com o servidor.");
     } finally {
       setLoading(false);
@@ -200,24 +205,40 @@ export default function NewsPublish() {
 
             <div className="input-group">
               <span className="label-text">Imagem de Capa</span>
-              <div className="upload-area" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', textAlign: 'center' }}>
+              <div
+                className="upload-area"
+                style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  textAlign: "center",
+                }}
+              >
                 <div className="upload-icon-wrapper">
-                  <ImageIcon size={32} color={selectedFile ? "#4caf50" : "currentColor"} />
+                  <ImageIcon
+                    size={32}
+                    color={selectedFile ? "#4caf50" : "currentColor"}
+                  />
                 </div>
                 <p className="upload-text-main">
-                  {selectedFile ? selectedFile.name : "Clique para carregar ou arraste e solte"}
+                  {selectedFile
+                    ? selectedFile.name
+                    : "Clique para carregar ou arraste e solte"}
                 </p>
-                <p className="upload-text-sub">SVG, PNG, JPG ou GIF (max. 10MB)</p>
-                <input 
-                  type="file" 
-                  accept="image/*" 
+                <p className="upload-text-sub">
+                  SVG, PNG, JPG ou GIF (max. 10MB)
+                </p>
+                <input
+                  type="file"
+                  accept="image/*"
                   onChange={handleFileChange}
                   style={{
-                    position: 'absolute',
-                    width: '100%',
-                    height: '100%',
+                    position: "absolute",
+                    width: "100%",
+                    height: "100%",
                     opacity: 0,
-                    cursor: 'pointer'
+                    cursor: "pointer",
                   }}
                 />
               </div>
@@ -260,9 +281,7 @@ export default function NewsPublish() {
                 ) : (
                   <div className="markdown-preview">
                     {formData.content ? (
-                      <ReactMarkdown>
-                        {formData.content}
-                      </ReactMarkdown>
+                      <ReactMarkdown>{formData.content}</ReactMarkdown>
                     ) : (
                       <p className="empty-msg">
                         Nada para visualizar ainda.

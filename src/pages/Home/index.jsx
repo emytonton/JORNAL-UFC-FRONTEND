@@ -1,15 +1,26 @@
 import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom"; // Importe o useNavigate
 import "./styles.css";
 
 const Home = () => {
   const [activeTab, setActiveTab] = useState("recentes");
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
+  
+  const navigate = useNavigate(); // Inicializa o hook de navegação
+
+  // URL base do Backend (Ngrok)
+  const API_BASE_URL = "https://f5f59eb2690a.ngrok-free.app";
 
   const fetchPosts = async () => {
     try {
-      const response = await fetch("http://localhost:3000/api/posts");
+      const response = await fetch(`${API_BASE_URL}/api/posts`, {
+        headers: {
+          "ngrok-skip-browser-warning": "true",
+          "Content-Type": "application/json",
+        },
+      });
+
       const data = await response.json();
 
       if (response.ok) {
@@ -28,9 +39,7 @@ const Home = () => {
 
   const handleDelete = async (postId) => {
     if (
-      !window.confirm(
-        "Tem certeza que deseja excluir esta publicação?"
-      )
+      !window.confirm("Tem certeza que deseja excluir esta publicação?")
     ) {
       return;
     }
@@ -38,20 +47,17 @@ const Home = () => {
     try {
       const token = localStorage.getItem("token");
 
-      const response = await fetch(
-        `http://localhost:3000/api/posts/${postId}`,
-        {
-          method: "DELETE",
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      const response = await fetch(`${API_BASE_URL}/api/posts/${postId}`, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+          "ngrok-skip-browser-warning": "true",
+          Authorization: `Bearer ${token}`,
+        },
+      });
 
       if (response.ok) {
-        setPosts((prev) =>
-          prev.filter((post) => post.id !== postId)
-        );
+        setPosts((prev) => prev.filter((post) => post.id !== postId));
         alert("Publicação excluída com sucesso!");
       } else {
         alert("Erro ao excluir publicação.");
@@ -70,14 +76,18 @@ const Home = () => {
     });
   };
 
+  // Função para navegar para os detalhes
+  const handlePostClick = () => {
+    navigate("/NewsDetail");
+    // Se no futuro quiser passar o ID, seria: navigate(`/NewsDetail/${post.id}`)
+  };
+
   return (
     <div className="home-container">
       <header className="top-navbar">
         <div className="navbar-content">
           <div className="brand">
-            <span className="material-symbols-outlined logo-icon">
-              school
-            </span>
+            <span className="material-symbols-outlined logo-icon">school</span>
             <h2>Portal de Notícias UFC</h2>
           </div>
 
@@ -93,21 +103,20 @@ const Home = () => {
 
           <div className="user-actions">
             <Link to="/CreatePost" className="new-post-btn">
-              <span className="material-symbols-outlined">
-                add
-              </span>
-              <span className="btn-text">
-                Nova Publicação
-              </span>
+              <span className="material-symbols-outlined">add</span>
+              <span className="btn-text">Nova Publicação</span>
             </Link>
 
-            <div
-              className="profile-pic"
-              style={{
-                backgroundImage:
-                  'url("https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=1887&auto=format&fit=crop")',
-              }}
-            />
+            <Link to="/Profile">
+              <div
+                className="profile-pic"
+                style={{
+                  backgroundImage:
+                    'url("https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=1887&auto=format&fit=crop")',
+                  cursor: "pointer",
+                }}
+              />
+            </Link>
           </div>
         </div>
       </header>
@@ -118,46 +127,34 @@ const Home = () => {
             <h3>Categorias</h3>
 
             <a href="#" className="nav-item active">
-              <span className="material-symbols-outlined">
-                feed
-              </span>
+              <span className="material-symbols-outlined">feed</span>
               Todas as Notícias
             </a>
-
-            <a href="#" className="nav-item">
-              <span className="material-symbols-outlined">
-                school
-              </span>
+            {/* ... outros itens do menu ... */}
+             <a href="#" className="nav-item">
+              <span className="material-symbols-outlined">school</span>
               Graduação
             </a>
 
             <a href="#" className="nav-item">
-              <span className="material-symbols-outlined">
-                public
-              </span>
+              <span className="material-symbols-outlined">public</span>
               Extensão
             </a>
 
             <a href="#" className="nav-item">
-              <span className="material-symbols-outlined">
-                science
-              </span>
+              <span className="material-symbols-outlined">science</span>
               Pesquisa
             </a>
 
             <a href="#" className="nav-item">
-              <span className="material-symbols-outlined">
-                event
-              </span>
+              <span className="material-symbols-outlined">event</span>
               Eventos
             </a>
           </div>
 
           <div className="nav-group mt-auto">
             <a href="#" className="nav-item">
-              <span className="material-symbols-outlined">
-                help
-              </span>
+              <span className="material-symbols-outlined">help</span>
               Ajuda & Suporte
             </a>
           </div>
@@ -168,11 +165,11 @@ const Home = () => {
             <div className="welcome-section">
               <h1>Olá, Estudante 👋</h1>
               <p>
-                Veja as últimas atualizações da comunidade
-                acadêmica.
+                Veja as últimas atualizações da comunidade acadêmica.
               </p>
             </div>
 
+            {/* Hero Card Estático */}
             <div className="hero-card">
               <div
                 className="hero-image"
@@ -185,18 +182,14 @@ const Home = () => {
               </div>
 
               <div className="hero-content">
-                <div className="meta-tag">
-                  Campus do Pici • 2 horas atrás
-                </div>
+                <div className="meta-tag">Campus do Pici • 2 horas atrás</div>
                 <h2>
-                  UFC inaugura novo centro de tecnologia e
-                  inovação
+                  UFC inaugura novo centro de tecnologia e inovação
                 </h2>
                 <p>
-                  Novo complexo promete impulsionar a inovação e
-                  o desenvolvimento regional com equipamentos de
-                  ponta para pesquisas avançadas em engenharia e
-                  computação.
+                  Novo complexo promete impulsionar a inovação e o
+                  desenvolvimento regional com equipamentos de ponta para
+                  pesquisas avançadas em engenharia e computação.
                 </p>
                 <a href="#" className="read-more">
                   Ler matéria completa →
@@ -206,18 +199,14 @@ const Home = () => {
 
             <div className="feed-tabs">
               <button
-                className={
-                  activeTab === "recentes" ? "active" : ""
-                }
+                className={activeTab === "recentes" ? "active" : ""}
                 onClick={() => setActiveTab("recentes")}
               >
                 Mais Recentes
               </button>
 
               <button
-                className={
-                  activeTab === "populares" ? "active" : ""
-                }
+                className={activeTab === "populares" ? "active" : ""}
                 onClick={() => setActiveTab("populares")}
               >
                 Populares
@@ -229,9 +218,12 @@ const Home = () => {
                 <p>Carregando notícias...</p>
               ) : (
                 posts.map((post) => (
-                  <article
-                    key={post.id}
+                  <article 
+                    key={post.id} 
                     className="news-card"
+                    // Adicionado onClick aqui para navegar ao clicar no card
+                    onClick={handlePostClick}
+                    style={{ cursor: "pointer" }}
                   >
                     <div
                       className="card-image"
@@ -239,14 +231,14 @@ const Home = () => {
                         backgroundImage: `url("${post.media}")`,
                       }}
                     >
-                      <span className="card-category">
-                        {post.category}
-                      </span>
+                      <span className="card-category">{post.category}</span>
 
                       <button
-                        onClick={() =>
-                          handleDelete(post.id)
-                        }
+                        // Atualizado para impedir propagação do clique
+                        onClick={(e) => {
+                          e.stopPropagation(); // Impede que abra a notícia ao clicar em deletar
+                          handleDelete(post.id);
+                        }}
                         className="delete-post-btn"
                         style={{
                           position: "absolute",
@@ -258,6 +250,7 @@ const Home = () => {
                           color: "white",
                           cursor: "pointer",
                           padding: "5px",
+                          zIndex: 10 // Garante que o botão fique acima do clique do card
                         }}
                       >
                         <span
@@ -289,10 +282,7 @@ const Home = () => {
             </div>
 
             <div className="pagination">
-              <button
-                className="load-more-btn"
-                onClick={fetchPosts}
-              >
+              <button className="load-more-btn" onClick={fetchPosts}>
                 Atualizar feed
               </button>
             </div>

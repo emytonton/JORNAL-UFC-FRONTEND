@@ -17,8 +17,8 @@ const Login = () => {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [isStudent, setIsStudent] = useState(false);
 
-  // URL da API
-  const API_URL = "http://localhost:3000/api/auth";
+  // URL da API atualizada para o Ngrok
+  const API_URL = "https://f5f59eb2690a.ngrok-free.app/api/auth";
 
   const handleLogin = async () => {
     if (!loginEmail || !loginPassword) {
@@ -31,6 +31,7 @@ const Login = () => {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          "ngrok-skip-browser-warning": "true", // Evita a tela de bloqueio do ngrok
         },
         body: JSON.stringify({
           email: loginEmail,
@@ -47,6 +48,7 @@ const Login = () => {
         alert(data.message || "Erro ao entrar");
       }
     } catch (error) {
+      console.error(error);
       alert("Erro de conexão com o servidor.");
     }
   };
@@ -61,7 +63,7 @@ const Login = () => {
       name,
       email,
       password,
-      role: isStudent ? "student" : "teacher"
+      role: isStudent ? "student" : "teacher",
     };
 
     try {
@@ -69,6 +71,7 @@ const Login = () => {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          "ngrok-skip-browser-warning": "true", // Evita a tela de bloqueio do ngrok
         },
         body: JSON.stringify(userData),
       });
@@ -82,6 +85,7 @@ const Login = () => {
         alert(data.message || "Erro no cadastro");
       }
     } catch (error) {
+      console.error(error);
       alert("Erro de conexão com o servidor.");
     }
   };
@@ -91,9 +95,7 @@ const Login = () => {
       <header className="main-header">
         <div className="header-content">
           <div className="logo-section">
-            <span className="material-symbols-outlined logo-icon">
-              school
-            </span>
+            <span className="material-symbols-outlined logo-icon">school</span>
             <h2>Portal UFC</h2>
           </div>
 
@@ -112,16 +114,14 @@ const Login = () => {
             <div className="left-content">
               <div>
                 <div className="icon-box">
-                  <span className="material-symbols-outlined">
-                    article
-                  </span>
+                  <span className="material-symbols-outlined">article</span>
                 </div>
 
                 <h1>Fique por dentro do que acontece na UFC.</h1>
 
                 <p>
-                  Acesse notícias acadêmicas, eventos culturais, editais
-                  e interaja com a comunidade universitária em um só lugar.
+                  Acesse notícias acadêmicas, eventos culturais, editais e
+                  interaja com a comunidade universitária em um só lugar.
                 </p>
               </div>
 
@@ -144,9 +144,7 @@ const Login = () => {
 
             <div className="tabs">
               <button
-                className={`tab-btn ${
-                  activeTab === "login" ? "active" : ""
-                }`}
+                className={`tab-btn ${activeTab === "login" ? "active" : ""}`}
                 onClick={() => setActiveTab("login")}
               >
                 Login
@@ -171,9 +169,7 @@ const Login = () => {
                       type="email"
                       placeholder="aluno@alu.ufc.br"
                       value={loginEmail}
-                      onChange={(e) =>
-                        setLoginEmail(e.target.value)
-                      }
+                      onChange={(e) => setLoginEmail(e.target.value)}
                     />
                     <span className="material-symbols-outlined input-icon">
                       person
@@ -194,9 +190,7 @@ const Login = () => {
                       type="password"
                       placeholder="••••••••"
                       value={loginPassword}
-                      onChange={(e) =>
-                        setLoginPassword(e.target.value)
-                      }
+                      onChange={(e) => setLoginPassword(e.target.value)}
                     />
                     <span className="material-symbols-outlined input-icon btn-icon">
                       visibility_off
@@ -256,9 +250,7 @@ const Login = () => {
                       type="password"
                       placeholder="Crie uma senha forte"
                       value={password}
-                      onChange={(e) =>
-                        setPassword(e.target.value)
-                      }
+                      onChange={(e) => setPassword(e.target.value)}
                     />
                     <span className="material-symbols-outlined input-icon">
                       lock
@@ -273,9 +265,7 @@ const Login = () => {
                       type="password"
                       placeholder="Repita a senha"
                       value={confirmPassword}
-                      onChange={(e) =>
-                        setConfirmPassword(e.target.value)
-                      }
+                      onChange={(e) => setConfirmPassword(e.target.value)}
                     />
                     <span className="material-symbols-outlined input-icon">
                       lock_reset
@@ -283,17 +273,17 @@ const Login = () => {
                   </div>
                 </div>
 
-                  <div className="checkbox-group"> 
-                    <label className="custom-checkbox"> 
-                      <input 
-                        type="checkbox" 
-                        checked={isStudent}
-                        onChange={(e) => setIsStudent(e.target.checked)}
-                      />
-                      <span className="label-text">Você é aluno?</span>  
-                      <span className="checkmark"></span> 
-                    </label> 
-                  </div>
+                <div className="checkbox-group">
+                  <label className="custom-checkbox">
+                    <input
+                      type="checkbox"
+                      checked={isStudent}
+                      onChange={(e) => setIsStudent(e.target.checked)}
+                    />
+                    <span className="label-text">Você é aluno?</span>
+                    <span className="checkmark"></span>
+                  </label>
+                </div>
 
                 <button
                   type="button"
