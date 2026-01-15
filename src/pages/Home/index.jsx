@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom"; // Importe o useNavigate
+import { Link, useNavigate } from "react-router-dom"; 
 import "./styles.css";
 
 const Home = () => {
@@ -7,17 +7,19 @@ const Home = () => {
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
   
-  const navigate = useNavigate(); // Inicializa o hook de navegação
+  const navigate = useNavigate(); 
 
-  // URL base do Backend (Ngrok)
-  const API_BASE_URL = "https://f5f59eb2690a.ngrok-free.app";
+
+  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
   const fetchPosts = async () => {
     try {
+      const token = localStorage.getItem("token");
       const response = await fetch(`${API_BASE_URL}/api/posts`, {
+        method: "GET",
         headers: {
-          "ngrok-skip-browser-warning": "true",
           "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
         },
       });
 
@@ -51,7 +53,6 @@ const Home = () => {
         method: "DELETE",
         headers: {
           "Content-Type": "application/json",
-          "ngrok-skip-browser-warning": "true",
           Authorization: `Bearer ${token}`,
         },
       });
@@ -77,9 +78,8 @@ const Home = () => {
   };
 
   // Função para navegar para os detalhes
-  const handlePostClick = () => {
-    navigate("/NewsDetail");
-    // Se no futuro quiser passar o ID, seria: navigate(`/NewsDetail/${post.id}`)
+  const handlePostClick = (postId) => {
+    navigate(`/NewsDetail/${postId}`);
   };
 
   return (
@@ -222,7 +222,7 @@ const Home = () => {
                     key={post.id} 
                     className="news-card"
                     // Adicionado onClick aqui para navegar ao clicar no card
-                    onClick={handlePostClick}
+                    onClick={() => handlePostClick(post.id)}
                     style={{ cursor: "pointer" }}
                   >
                     <div

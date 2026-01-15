@@ -18,7 +18,7 @@ const Login = () => {
   const [isStudent, setIsStudent] = useState(false);
 
   // URL da API atualizada para o Ngrok
-  const API_URL = "https://f5f59eb2690a.ngrok-free.app/api/auth";
+  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
   const handleLogin = async () => {
     if (!loginEmail || !loginPassword) {
@@ -27,7 +27,7 @@ const Login = () => {
     }
 
     try {
-      const response = await fetch(`${API_URL}/signin`, {
+      const response = await fetch(`${API_BASE_URL}/api/auth/signin`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -43,6 +43,9 @@ const Login = () => {
 
       if (response.ok) {
         localStorage.setItem("token", data.token);
+        if (data.user) {
+          localStorage.setItem("user", JSON.stringify(data.user));
+        }
         navigate("/home");
       } else {
         alert(data.message || "Erro ao entrar");
@@ -67,7 +70,7 @@ const Login = () => {
     };
 
     try {
-      const response = await fetch(`${API_URL}/signup`, {
+      const response = await fetch(`${API_BASE_URL}/api/auth/signup`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

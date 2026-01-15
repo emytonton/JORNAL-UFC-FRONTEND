@@ -25,7 +25,7 @@ export default function NewsPublish() {
   const [activeTab, setActiveTab] = useState("write");
   const [loading, setLoading] = useState(false);
 
-  const API_BASE_URL = "https://f5f59eb2690a.ngrok-free.app";
+  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
